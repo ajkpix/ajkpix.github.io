@@ -8,7 +8,8 @@
 <title>Tech | Ajkpix&#39;s Blog</title>
 <meta name="keywords" content="">
 <meta name="description" content="">
-<meta name="author" content="Sulv">
+<meta name="author" content="
+作者:&nbsp;Ajkpix">
 <link rel="canonical" href="https://ajkpix.github.io/tags/tech/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.css" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://ajkpix.github.io/img/%E8%89%BE%E8%8E%89.jpg">
@@ -56,7 +57,8 @@
         }
 
     </style>
-</noscript><meta property="og:title" content="Tech" />
+</noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+<meta property="og:title" content="Tech" />
 <meta property="og:description" content="" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://ajkpix.github.io/tags/tech/" />
@@ -157,32 +159,77 @@
 </header>
 
 <article class="post-entry tag-entry"> 
-<figure class="entry-cover"><img loading="lazy" src="https://ajkpix.github.io/posts/tech/tech1/1.png" alt="">
+<figure class="entry-cover"><img loading="lazy" src="https://ajkpix.github.io/posts/tech/tech/1.png" alt="玉子最可爱">
 </figure>
   <header class="entry-header">
-    <h2>Redis scan命令学习
+    <h2>博客模板
     </h2>
   </header>
   <div class="entry-content">
-    <p>1. 介绍 scan命令的作用和keys *的作用类似，主要用于查找redis中的键，但是在正式的生产环境中一般不会直接使用keys *这个命令，因为他会返回所有的键，如果键的数量很多会导致查询时间很长，进而导致服务器阻塞，所以需要scan来进行更细致的查找
+    <p>1. 修改 需要进行更改的文件为layouts/partials/post_meta.html、layouts/partials/author.html、layouts/partials/extend_head.html以及params。
+layouts/partials/post_meta.html的更改链接为https://github.com/xyming108/sulv-hugo-papermod/blob/main/layouts/partials/post_meta.html，其更改结果如下：
 ...</p>
   </div>
-  <footer class="entry-footer">&lt;span title=&#39;2022-11-30 15:55:23 &#43;0800 CST&#39;&gt;2022-11-30&lt;/span&gt;&amp;nbsp;·&amp;nbsp;2 分钟&amp;nbsp;·&amp;nbsp;Sulv</footer>
-  <a class="entry-link" aria-label="post link to Redis scan命令学习" href="https://ajkpix.github.io/posts/tech/tech1/"></a>
-</article>
+  <footer class="entry-footer">
 
-<article class="post-entry tag-entry"> 
-<figure class="entry-cover"><img loading="lazy" src="https://www.sulvblog.cn/posts/blog/how_to_write_a_blog/1.png" alt="">
-</figure>
-  <header class="entry-header">
-    <h2>Tech
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>&lt;div&gt; 科技代码科技代码科技代码科技代码科技代码科技代码科技代码科技代码科技代码科技代码科技代码科技代码科技代码科技代码科技代码科技代码科技代码科技代码科技代码科技代码科技代码 科技代码 科技代码 科技代码 科技代码 科技代码 科技代码 科技代码 科技代码 科技代码 科技代码 科技代码 科技代码 科技代码 科技代码 科技代码 科技代码 科技代码 科技代码 科技代码 科技代码 科技代码 科技代码 科技代码 科技代码 科技代码 科技代码 科技代码 科技代码 科技代码 科技代码 科技代码 &lt;/div&gt; ...</p>
-  </div>
-  <footer class="entry-footer">&lt;span title=&#39;2022-05-05 00:17:58 &#43;0800 CST&#39;&gt;2022-05-05&lt;/span&gt;&amp;nbsp;·&amp;nbsp;1 分钟&amp;nbsp;·&amp;nbsp;Sulv</footer>
-  <a class="entry-link" aria-label="post link to Tech" href="https://ajkpix.github.io/posts/tech/tech/"></a>
+<style>
+    i[id*="post_meta_style"] {
+        display: flex;
+        align-items: center;
+        margin: 0 0 10px 0;
+    }
+
+    .parent-post-meta {
+        display: flex;
+        flex-wrap: wrap;
+        opacity: 0.8;
+    }
+</style>
+
+<span class="parent-post-meta">
+    <span id="post_meta_style_1">
+        <span class="fa fa-calendar-check-o"></span>
+        <span>2024-09-15
+            &nbsp;&nbsp;
+        </span>
+    </span>
+    
+    
+    
+    
+    
+    
+    
+    <span id="post_meta_style_3">
+        <span class="fa fa-file-word-o"></span>
+        <span>497字
+            &nbsp;&nbsp;
+        </span>
+    </span>
+    <span id="post_meta_style_4">
+        <span class="fa fa-clock-o"></span>
+        <span>1分钟
+            &nbsp;&nbsp;
+        </span>
+    </span>
+    <span id="post_meta_style_5">
+        <span class="fa fa-user-o"></span>
+        <span>
+作者:&nbsp;Ajkpix
+            &nbsp;&nbsp;
+        </span>
+    </span>
+    <span id="post_meta_style_6">
+        <span class="fa fa-tags" style="opacity: 0.8"></span>
+        <span>
+            <span class="post-tags-meta">
+                <a href="https://ajkpix.github.io/tags/%E6%A8%A1%E6%9D%BF/" style="color: var(--secondary)!important;">模板</a>
+                &nbsp;<a href="https://ajkpix.github.io/tags/tech/" style="color: var(--secondary)!important;">Tech</a>
+            </span>
+        </span>
+    </span>
+</span></footer>
+  <a class="entry-link" aria-label="post link to 博客模板" href="https://ajkpix.github.io/posts/tech/tech/"></a>
 </article>
     </main>
     
