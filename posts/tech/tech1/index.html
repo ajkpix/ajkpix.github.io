@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh" dir="auto">
 
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
@@ -9,17 +9,17 @@
 <meta name="keywords" content="Redis">
 <meta name="description" content="scan命令详解">
 <meta name="author" content="Sulv">
-<link rel="canonical" href="http://localhost:1313/posts/tech/tech1/">
+<link rel="canonical" href="https://ajkpix.github.io/posts/tech/tech1/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.css" rel="preload stylesheet" as="style">
 <script defer crossorigin="anonymous" src="/assets/js/highlight.js" onload="hljs.initHighlightingOnLoad();"></script>
-<link rel="icon" href="http://localhost:1313/img/%E8%89%BE%E8%8E%89.jpg">
-<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/img/%E8%89%BE%E8%8E%89.jpg">
-<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/img/%E8%89%BE%E8%8E%89.jpg">
-<link rel="apple-touch-icon" href="http://localhost:1313/img/%E8%89%BE%E8%8E%89.jpg">
-<link rel="mask-icon" href="http://localhost:1313/img/%E8%89%BE%E8%8E%89.jpg">
+<link rel="icon" href="https://ajkpix.github.io/img/%E8%89%BE%E8%8E%89.jpg">
+<link rel="icon" type="image/png" sizes="16x16" href="https://ajkpix.github.io/img/%E8%89%BE%E8%8E%89.jpg">
+<link rel="icon" type="image/png" sizes="32x32" href="https://ajkpix.github.io/img/%E8%89%BE%E8%8E%89.jpg">
+<link rel="apple-touch-icon" href="https://ajkpix.github.io/img/%E8%89%BE%E8%8E%89.jpg">
+<link rel="mask-icon" href="https://ajkpix.github.io/img/%E8%89%BE%E8%8E%89.jpg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="zh" href="http://localhost:1313/posts/tech/tech1/">
+<link rel="alternate" hreflang="zh" href="https://ajkpix.github.io/posts/tech/tech1/">
 <noscript>
     <style>
         #theme-toggle,
@@ -59,13 +59,13 @@
 </noscript><meta property="og:title" content="Redis scan命令学习" />
 <meta property="og:description" content="scan命令详解" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="http://localhost:1313/posts/tech/tech1/" />
-<meta property="og:image" content="http://localhost:1313/posts/tech/tech1/1.png" /><meta property="article:section" content="posts" />
+<meta property="og:url" content="https://ajkpix.github.io/posts/tech/tech1/" />
+<meta property="og:image" content="https://ajkpix.github.io/posts/tech/tech1/1.png" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2022-11-30T15:55:23+08:00" />
 <meta property="article:modified_time" content="2022-11-30T15:55:23+08:00" />
 
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:image" content="http://localhost:1313/posts/tech/tech1/1.png" />
+<meta name="twitter:image" content="https://ajkpix.github.io/posts/tech/tech1/1.png" />
 <meta name="twitter:title" content="Redis scan命令学习"/>
 <meta name="twitter:description" content="scan命令详解"/>
 
@@ -79,19 +79,19 @@
       "@type": "ListItem",
       "position":  1 ,
       "name": "📚文章",
-      "item": "http://localhost:1313/posts/"
+      "item": "https://ajkpix.github.io/posts/"
     }, 
     {
       "@type": "ListItem",
       "position":  2 ,
       "name": "👨🏻‍💻 技术",
-      "item": "http://localhost:1313/posts/tech/"
+      "item": "https://ajkpix.github.io/posts/tech/"
     }, 
     {
       "@type": "ListItem",
       "position":  3 ,
       "name": "Redis scan命令学习",
-      "item": "http://localhost:1313/posts/tech/tech1/"
+      "item": "https://ajkpix.github.io/posts/tech/tech1/"
     }
   ]
 }
@@ -109,7 +109,7 @@
   "articleBody": "1. 介绍 scan命令的作用和keys *的作用类似，主要用于查找redis中的键，但是在正式的生产环境中一般不会直接使用keys *这个命令，因为他会返回所有的键，如果键的数量很多会导致查询时间很长，进而导致服务器阻塞，所以需要scan来进行更细致的查找\nscan总共有这几种命令：scan、sscan、hscan、zscan，分别用于迭代数据库中的：数据库中所有键、集合键、哈希键、有序集合键，命令具体结构如下：\nscan cursor [MATCH pattern] [COUNT count] [TYPE type] sscan key cursor [MATCH pattern] [COUNT count] hscan key cursor [MATCH pattern] [COUNT count] zscan key cursor [MATCH pattern] [COUNT count] 2. scan scan cursor [MATCH pattern] [COUNT count] [TYPE type]，cursor表示游标，指查询开始的位置，count默认为10，查询完后会返回下一个开始的游标，当返回0的时候表示所有键查询完了\n127.0.0.1:6379[2]\u003e scan 0 1) \"3\" 2) 1) \"mystring\" 2) \"myzadd\" 3) \"myhset\" 4) \"mylist\" 5) \"myset2\" 6) \"myset1\" 7) \"mystring1\" 8) \"mystring3\" 9) \"mystring4\" 10) \"myset\" 127.0.0.1:6379[2]\u003e scan 3 1) \"0\" 2) 1) \"myzadd1\" 2) \"mystring2\" 3) \"mylist2\" 4) \"myhset1\" 5) \"mylist1\" MATCH可以采用模糊匹配找出自己想要查找的键，这里的逻辑是先查出20个，再匹配，而不是先匹配再查询，这里加上count 20是因为默认查出的10个数中可能不能包含所有的相关项，所以把范围扩大到查20个，我这里测试的键总共有15个\n127.0.0.1:6379[2]\u003e scan 0 match mylist* count 20 1) \"0\" 2) 1) \"mylist\" 2) \"mylist2\" 3) \"mylist1\" TYPE可以根据具体的结构类型来匹配该类型的键\n127.0.0.1:6379[2]\u003e scan 0 count 20 type list 1) \"0\" 2) 1) \"mylist\" 2) \"mylist2\" 3) \"mylist1\" 3. sscan sscan key cursor [MATCH pattern] [COUNT count]，sscan的第一个参数总是集合类型的key\n127.0.0.1:6379[2]\u003e sadd myset1 a b c d (integer) 4 127.0.0.1:6379[2]\u003e smembers myset1 1) \"d\" 2) \"a\" 3) \"c\" 4) \"b\" 127.0.0.1:6379[2]\u003e sscan myset1 0 1) \"0\" 2) 1) \"d\" 2) \"c\" 3) \"b\" 4) \"a\" 127.0.0.1:6379[2]\u003e sscan myset1 0 match a 1) \"0\" 2) 1) \"a\" 4. hscan hscan key cursor [MATCH pattern] [COUNT count]，sscan的第一个参数总是哈希类型的key\n127.0.0.1:6379[2]\u003e hset myhset1 kk1 vv1 kk2 vv2 kk3 vv3 (integer) 3 127.0.0.1:6379[2]\u003e hgetall myhset1 1) \"kk1\" 2) \"vv1\" 3) \"kk2\" 4) \"vv2\" 5) \"kk3\" 6) \"vv3\" 127.0.0.1:6379[2]\u003e hscan myhset1 0 1) \"0\" 2) 1) \"kk1\" 2) \"vv1\" 3) \"kk2\" 4) \"vv2\" 5) \"kk3\" 6) \"vv3\" 5. zscan zscan key cursor [MATCH pattern] [COUNT count]，sscan的第一个参数总是有序集合类型的key\n127.0.0.1:6379[2]\u003e zadd myzadd1 1 zz1 2 zz2 3 zz3 (integer) 3 127.0.0.1:6379[2]\u003e zrange myzadd1 0 -1 withscores 1) \"zz1\" 2) \"1\" 3) \"zz2\" 4) \"2\" 5) \"zz3\" 6) \"3\" 127.0.0.1:6379[2]\u003e zscan myzadd1 0 1) \"0\" 2) 1) \"zz1\" 2) \"1\" 3) \"zz2\" 4) \"2\" 5) \"zz3\" 6) \"3\" ",
   "wordCount" : "770",
   "inLanguage": "zh",
-  "image":"http://localhost:1313/posts/tech/tech1/1.png","datePublished": "2022-11-30T15:55:23+08:00",
+  "image":"https://ajkpix.github.io/posts/tech/tech1/1.png","datePublished": "2022-11-30T15:55:23+08:00",
   "dateModified": "2022-11-30T15:55:23+08:00",
   "author":[{
     "@type": "Person",
@@ -117,14 +117,14 @@
   }],
   "mainEntityOfPage": {
     "@type": "WebPage",
-    "@id": "http://localhost:1313/posts/tech/tech1/"
+    "@id": "https://ajkpix.github.io/posts/tech/tech1/"
   },
   "publisher": {
     "@type": "Organization",
     "name": "Ajkpix's Blog",
     "logo": {
       "@type": "ImageObject",
-      "url": "http://localhost:1313/img/%E8%89%BE%E8%8E%89.jpg"
+      "url": "https://ajkpix.github.io/img/%E8%89%BE%E8%8E%89.jpg"
     }
   }
 }
@@ -146,8 +146,8 @@
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="http://localhost:1313/" accesskey="h" title="Ajkpixs Blog (Alt + H)">
-                <img src="http://localhost:1313/img/%E8%89%BE%E8%8E%89.jpg" alt="" aria-label="logo"
+            <a href="https://ajkpix.github.io/" accesskey="h" title="Ajkpixs Blog (Alt + H)">
+                <img src="https://ajkpix.github.io/img/%E8%89%BE%E8%8E%89.jpg" alt="" aria-label="logo"
                     height="35">Ajkpixs Blog</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
@@ -176,37 +176,37 @@
         </div>
         <ul id="menu">
             <li>
-                <a href="http://localhost:1313/search" title="🔍 搜索 (Alt &#43; /)" accesskey=/>
+                <a href="https://ajkpix.github.io/search" title="🔍 搜索 (Alt &#43; /)" accesskey=/>
                     <span>🔍 搜索</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/" title="🏠 主页">
+                <a href="https://ajkpix.github.io/" title="🏠 主页">
                     <span>🏠 主页</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/posts" title="📚 文章">
+                <a href="https://ajkpix.github.io/posts" title="📚 文章">
                     <span>📚 文章</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/tags" title="🧩 标签">
+                <a href="https://ajkpix.github.io/tags" title="🧩 标签">
                     <span>🧩 标签</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/archives/" title="⏱️ 时间轴">
+                <a href="https://ajkpix.github.io/archives/" title="⏱️ 时间轴">
                     <span>⏱️ 时间轴</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/about" title="🙋🏻‍♂️ 关于">
+                <a href="https://ajkpix.github.io/about" title="🙋🏻‍♂️ 关于">
                     <span>🙋🏻‍♂️ 关于</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/links" title="🤝 友链">
+                <a href="https://ajkpix.github.io/links" title="🤝 友链">
                     <span>🤝 友链</span>
                 </a>
             </li>
@@ -217,7 +217,7 @@
 
 <article class="post-single">
   <header class="post-header">
-    <div class="breadcrumbs"><a href="http://localhost:1313/">主页</a>&nbsp;»&nbsp;<a href="http://localhost:1313/posts/">📚文章</a>&nbsp;»&nbsp;<a href="http://localhost:1313/posts/tech/">👨🏻‍💻 技术</a></div>
+    <div class="breadcrumbs"><a href="https://ajkpix.github.io/">主页</a>&nbsp;»&nbsp;<a href="https://ajkpix.github.io/posts/">📚文章</a>&nbsp;»&nbsp;<a href="https://ajkpix.github.io/posts/tech/">👨🏻‍💻 技术</a></div>
     <h1 class="post-title">
       Redis scan命令学习
     </h1>
@@ -228,7 +228,7 @@
 
 </div>
   </header> 
-<figure class="entry-cover"><img loading="lazy" src="http://localhost:1313/posts/tech/tech1/1.png" alt="">
+<figure class="entry-cover"><img loading="lazy" src="https://ajkpix.github.io/posts/tech/tech1/1.png" alt="">
         
 </figure><div class="toc">
     <details  open>
@@ -355,16 +355,16 @@
 
   <footer class="post-footer">
     <ul class="post-tags">
-      <li><a href="http://localhost:1313/tags/redis/">Redis</a></li>
-      <li><a href="http://localhost:1313/tags/tech/">Tech</a></li>
+      <li><a href="https://ajkpix.github.io/tags/redis/">Redis</a></li>
+      <li><a href="https://ajkpix.github.io/tags/tech/">Tech</a></li>
     </ul>
 <nav class="paginav">
-  <a class="prev" href="http://localhost:1313/posts/read/read/">
+  <a class="prev" href="https://ajkpix.github.io/posts/read/read/">
     <span class="title">« 上一页</span>
     <br>
     <span>Text-to-Text Transfer Transformer(T5)</span>
   </a>
-  <a class="next" href="http://localhost:1313/posts/blog/blog/">
+  <a class="next" href="https://ajkpix.github.io/posts/blog/blog/">
     <span class="title">下一页 »</span>
     <br>
     <span>Blog</span>
@@ -376,7 +376,7 @@
     </main>
     
 <footer class="footer">
-    <span>&copy; 2024 <a href="http://localhost:1313/">Ajkpix&#39;s Blog</a></span>
+    <span>&copy; 2024 <a href="https://ajkpix.github.io/">Ajkpix&#39;s Blog</a></span>
     <span>
         Powered by
         <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
