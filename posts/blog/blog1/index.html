@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>EnCodec在大语言模型上的调研 | Ajkpix&#39;s Blog</title>
+<meta name="keywords" content="LLM, EnCodec">
+<meta name="description" content="一次调研（查重率99%）">
+<meta name="author" content="
+作者:&nbsp;Ajkpix">
+<link rel="canonical" href="https://ajkpix.github.io/posts/blog/blog1/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.css" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.js" onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://ajkpix.github.io/img/%E8%89%BE%E8%8E%89.jpg">
+<link rel="icon" type="image/png" sizes="16x16" href="https://ajkpix.github.io/img/%E8%89%BE%E8%8E%89.jpg">
+<link rel="icon" type="image/png" sizes="32x32" href="https://ajkpix.github.io/img/%E8%89%BE%E8%8E%89.jpg">
+<link rel="apple-touch-icon" href="https://ajkpix.github.io/img/%E8%89%BE%E8%8E%89.jpg">
+<link rel="mask-icon" href="https://ajkpix.github.io/img/%E8%89%BE%E8%8E%89.jpg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="zh" href="https://ajkpix.github.io/posts/blog/blog1/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+<meta property="og:title" content="EnCodec在大语言模型上的调研" />
+<meta property="og:description" content="一次调研（查重率99%）" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://ajkpix.github.io/posts/blog/blog1/" />
+<meta property="og:image" content="https://ajkpix.github.io/posts/blog/blog1/%E5%B0%81%E7%9A%AE.png" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2024-09-20T13:00:00+08:00" />
+<meta property="article:modified_time" content="2024-09-20T13:00:00+08:00" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://ajkpix.github.io/posts/blog/blog1/%E5%B0%81%E7%9A%AE.png" />
+<meta name="twitter:title" content="EnCodec在大语言模型上的调研"/>
+<meta name="twitter:description" content="一次调研（查重率99%）"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "📚文章",
+      "item": "https://ajkpix.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "🧱 建站",
+      "item": "https://ajkpix.github.io/posts/blog/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "EnCodec在大语言模型上的调研",
+      "item": "https://ajkpix.github.io/posts/blog/blog1/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "EnCodec在大语言模型上的调研",
+  "name": "EnCodec在大语言模型上的调研",
+  "description": "一次调研（查重率99%）",
+  "keywords": [
+    "LLM", "EnCodec"
+  ],
+  "articleBody": "一. EnCodec 1. 模型任务 EnCodec是在SoundStream模型的基础上提出的，用于实现音频数据的高效压缩。其被提出是为了解决音频数据的实时传输，因为要保证数据传输的实时性，所以需要对音频数据进行压缩，同时也要保证被压缩的质量。该工作就是利用神经网络来解决压缩与恢复工作。\n2. 模型发展 压缩可以追溯到AE(Auto Encoder)模型，是一个编解码模型，由编码器进行压缩，解码器进行恢复。这是一个自监督模型，它只需要对模型的输入x和模型的输出x`进行损失计算即可。\n然而由于AE模型编码器编码出来的向量空间不规整，其无法适用于生成任务，因为解码器并不能识别一个随意的向量。因为为了使编码空间规整，VAE(Variational Auto Encoder)模型被提出。其使编码向量满足正态分布，这样编码器也可以识别正态分布的向量了，进而实现随机生成任务。\n但是实验结果表明VAE模型的生成并不理想，进而被认为连续的编码向量不如转换为离散。这种类似选项或者是词汇的输入更符合人类创作的过程。VQ-VAE(Vector Quantised - Variational Auto Encoder)模型使用类似嵌入层(Embedding)的操作让解码器能够识别离散化的向量，该层被称作嵌入空间(embedding space)，在后续文章中被称作码本(codebook)。然而这个离散向量的空间又变成不好采样的了，为了解决这个问题作者训练了一个生成模型学习生成离散样本，进而解决上述问题。使用logit获取离散向量再把它映射成连续向量被认为是很多余的操作，在VQ-VAE模型中使用编码器的输出向量找寻码本中距离最近的向量进行替换，生成离散向量便是如此过程。那么问题又来了，反向传播怎么办？VQ-VAE基于“straight-through”技术使用了sg(stop gradient)运算解决了这个问题，细节不进行研究了。后续该运算也解决了码本训练的问题。\n参考文献from知乎：https://zhuanlan.zhihu.com/p/633744455\n3. 模型结构 模型框架图如下所示，主要由Encoder、Quantizer、Decoder以及Discriminator四部分构成，共计算了6处损失函数。\n编码器和解码器的设计基本是镜像的，由1D卷积层、B个卷积块、两层LSTM和最后一个1D卷积层组成。模型支持流式与非流式，只是padding和归一化不同。\n量化器是由RVQ(Residual Vector Quantization，残差向量量化)实现的，那么它与VQ-VAE中的VQ有何不同呢？单个码本经原作者计算是远远不够的，这样的话需要多个码本来解决问题，多个quantization block对应多个码本，之间用残差连接，相当于后面的quantization block量化的是前一个的误差，具体细节可在参考文献中了解。该部分还加入了一个较小的语言模型，根据当前时刻的RVQ向量来预测下一个时刻的RVQ向量，从而提前完成语音解码的工作。其加速了解码速度。\n模型使用多个判别器来评估解码器恢复的效果，这里用到了GAN模型。\n4. 参考文献 知乎：https://zhuanlan.zhihu.com/p/672684663\n论文链接：https://arxiv.org/pdf/2210.13438\n二. VALL-E 1. 模型任务：语音合成大模型 上篇作者认为连续的音频数据经过Encodec压缩后变成了离散的数据，那就可以将这些离散的ID视作一个个token，用大量的语音数据训练出一个语音的“大语言模型”。微软推出的VALL-E和VALL-E-X模型做的就是这样的工作。zero-shot TTS!!!\n2. 模型过程 EnCodec由于将语音进行了压缩，重建质量高和压缩程度大，很好地解决了语音和文本在信息密度和长度上的巨大差异。并且Encodec有现成的解码器能够将离散表征转换为声音波形，无需训练额外的声码器。\nRQV中生成的离散向量被称为声学词元(acoustic tokens)，与被音素转换模块由文本提示词转换成的因素一同送入模型，预测后续的声学词元，进而被解码器转化为声学波形。\n知乎作者给出的结论：VALLE就是使用Encodec的离散表征来做acoustic tokens，堆大数据来做语音领域的大语言模型。\n3. 参考文献 知乎：https://zhuanlan.zhihu.com/p/672852107\n论文链接：https://arxiv.org/pdf/2301.02111\n",
+  "wordCount" : "1819",
+  "inLanguage": "zh",
+  "image":"https://ajkpix.github.io/posts/blog/blog1/%E5%B0%81%E7%9A%AE.png","datePublished": "2024-09-20T13:00:00+08:00",
+  "dateModified": "2024-09-20T13:00:00+08:00",
+  "author":[{
+    "@type": "Person",
+    "name": "Ajkpix"
+  }],
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://ajkpix.github.io/posts/blog/blog1/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Ajkpix's Blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://ajkpix.github.io/img/%E8%89%BE%E8%8E%89.jpg"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://ajkpix.github.io/" accesskey="h" title="Ajkpixs Blog (Alt + H)">
+                <img src="https://ajkpix.github.io/img/%E8%89%BE%E8%8E%89.jpg" alt="" aria-label="logo"
+                    height="35">Ajkpixs Blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                <ul class="lang-switch"><li>|</li>
+                </ul>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://ajkpix.github.io/search" title="🔍 搜索 (Alt &#43; /)" accesskey=/>
+                    <span>🔍 搜索</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://ajkpix.github.io/" title="🏠 主页">
+                    <span>🏠 主页</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://ajkpix.github.io/posts" title="📚 文章">
+                    <span>📚 文章</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://ajkpix.github.io/tags" title="🧩 标签">
+                    <span>🧩 标签</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://ajkpix.github.io/archives/" title="⏱️ 时间轴">
+                    <span>⏱️ 时间轴</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://ajkpix.github.io/about" title="🙋🏻‍♂️ 关于">
+                    <span>🙋🏻‍♂️ 关于</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://ajkpix.github.io/links" title="🤝 友链">
+                    <span>🤝 友链</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://ajkpix.github.io/">主页</a>&nbsp;»&nbsp;<a href="https://ajkpix.github.io/posts/">📚文章</a>&nbsp;»&nbsp;<a href="https://ajkpix.github.io/posts/blog/">🧱 建站</a></div>
+    <h1 class="post-title">
+      EnCodec在大语言模型上的调研
+    </h1>
+    <div class="post-description">
+      一次调研（查重率99%）
+    </div>
+    <div class="post-meta">
+
+<style>
+    i[id*="post_meta_style"] {
+        display: flex;
+        align-items: center;
+        margin: 0 0 10px 0;
+    }
+
+    .parent-post-meta {
+        display: flex;
+        flex-wrap: wrap;
+        opacity: 0.8;
+    }
+</style>
+
+<span class="parent-post-meta">
+    <span id="post_meta_style_1">
+        <span class="fa fa-calendar-check-o"></span>
+        <span>2024-09-20
+            &nbsp;&nbsp;
+        </span>
+    </span>
+    
+    
+    
+    
+    
+    
+    
+    <span id="post_meta_style_3">
+        <span class="fa fa-file-word-o"></span>
+        <span>1819字
+            &nbsp;&nbsp;
+        </span>
+    </span>
+    <span id="post_meta_style_4">
+        <span class="fa fa-clock-o"></span>
+        <span>4分钟
+            &nbsp;&nbsp;
+        </span>
+    </span>
+    <span id="post_meta_style_5">
+        <span class="fa fa-user-o"></span>
+        <span>
+作者:&nbsp;Ajkpix
+            &nbsp;&nbsp;
+        </span>
+    </span>
+    <span id="post_meta_style_6">
+        <span class="fa fa-tags" style="opacity: 0.8"></span>
+        <span>
+            <span class="post-tags-meta">
+                <a href="https://ajkpix.github.io/tags/llm/" style="color: var(--secondary)!important;">LLM</a>
+                &nbsp;<a href="https://ajkpix.github.io/tags/encodec/" style="color: var(--secondary)!important;">EnCodec</a>
+                &nbsp;<a href="https://ajkpix.github.io/tags/blog/" style="color: var(--secondary)!important;">Blog</a>
+            </span>
+        </span>
+    </span>
+</span>
+
+</div>
+  </header> 
+<figure class="entry-cover"><img loading="lazy" src="https://ajkpix.github.io/posts/blog/blog1/%E5%B0%81%E7%9A%AE.png" alt="语音大模型">
+        <p>语音大模型</p>
+</figure><div class="toc">
+    <details  open>
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">目录</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#%e4%b8%80-encodec" aria-label="一. EnCodec">一. EnCodec</a><ul>
+                        
+                <li>
+                    <a href="#1-%e6%a8%a1%e5%9e%8b%e4%bb%bb%e5%8a%a1" aria-label="1. 模型任务">1. 模型任务</a></li>
+                <li>
+                    <a href="#2-%e6%a8%a1%e5%9e%8b%e5%8f%91%e5%b1%95" aria-label="2. 模型发展">2. 模型发展</a></li>
+                <li>
+                    <a href="#3-%e6%a8%a1%e5%9e%8b%e7%bb%93%e6%9e%84" aria-label="3. 模型结构">3. 模型结构</a></li>
+                <li>
+                    <a href="#4-%e5%8f%82%e8%80%83%e6%96%87%e7%8c%ae" aria-label="4. 参考文献">4. 参考文献</a></li></ul>
+                </li>
+                <li>
+                    <a href="#%e4%ba%8c-vall-e" aria-label="二. VALL-E">二. VALL-E</a><ul>
+                        
+                <li>
+                    <a href="#1-%e6%a8%a1%e5%9e%8b%e4%bb%bb%e5%8a%a1%e8%af%ad%e9%9f%b3%e5%90%88%e6%88%90%e5%a4%a7%e6%a8%a1%e5%9e%8b" aria-label="1. 模型任务：语音合成大模型">1. 模型任务：语音合成大模型</a></li>
+                <li>
+                    <a href="#2-%e6%a8%a1%e5%9e%8b%e8%bf%87%e7%a8%8b" aria-label="2. 模型过程">2. 模型过程</a></li>
+                <li>
+                    <a href="#3-%e5%8f%82%e8%80%83%e6%96%87%e7%8c%ae" aria-label="3. 参考文献">3. 参考文献</a>
+                </li>
+            </ul>
+            </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h2 id="一-encodec">一. EnCodec<a hidden class="anchor" aria-hidden="true" href="#一-encodec">#</a></h2>
+<h3 id="1-模型任务">1. 模型任务<a hidden class="anchor" aria-hidden="true" href="#1-模型任务">#</a></h3>
+<p>EnCodec是在SoundStream模型的基础上提出的，用于实现音频数据的高效压缩。其被提出是为了解决音频数据的实时传输，因为要保证数据传输的实时性，所以需要对音频数据进行压缩，同时也要保证被压缩的质量。该工作就是利用神经网络来解决压缩与恢复工作。</p>
+<h3 id="2-模型发展">2. 模型发展<a hidden class="anchor" aria-hidden="true" href="#2-模型发展">#</a></h3>
+<p>压缩可以追溯到AE(Auto Encoder)模型，是一个编解码模型，由编码器进行压缩，解码器进行恢复。这是一个自监督模型，它只需要对模型的输入x和模型的输出x`进行损失计算即可。</p>
+<p>然而由于AE模型编码器编码出来的向量空间不规整，其无法适用于生成任务，因为解码器并不能识别一个随意的向量。因为为了使编码空间规整，VAE(Variational Auto Encoder)模型被提出。其使编码向量满足正态分布，这样编码器也可以识别正态分布的向量了，进而实现随机生成任务。</p>
+<p>但是实验结果表明VAE模型的生成并不理想，进而被认为连续的编码向量不如转换为离散。这种类似选项或者是词汇的输入更符合人类创作的过程。VQ-VAE(Vector Quantised - Variational Auto Encoder)模型使用类似嵌入层(Embedding)的操作让解码器能够识别离散化的向量，该层被称作嵌入空间(embedding space)，在后续文章中被称作码本(codebook)。然而这个离散向量的空间又变成不好采样的了，为了解决这个问题作者训练了一个生成模型学习生成离散样本，进而解决上述问题。使用logit获取离散向量再把它映射成连续向量被认为是很多余的操作，在VQ-VAE模型中使用编码器的输出向量找寻码本中距离最近的向量进行替换，生成离散向量便是如此过程。那么问题又来了，反向传播怎么办？VQ-VAE基于“straight-through”技术使用了sg(stop gradient)运算解决了这个问题，细节不进行研究了。后续该运算也解决了码本训练的问题。</p>
+<p>参考文献from知乎：<a href="https://zhuanlan.zhihu.com/p/633744455">https://zhuanlan.zhihu.com/p/633744455</a></p>
+<h3 id="3-模型结构">3. 模型结构<a hidden class="anchor" aria-hidden="true" href="#3-模型结构">#</a></h3>
+<p>模型框架图如下所示，主要由Encoder、Quantizer、Decoder以及Discriminator四部分构成，共计算了6处损失函数。</p>
+<p><img loading="lazy" src="../blog1/EnCodec_model.png" alt="EnCodec"  />
+</p>
+<p>编码器和解码器的设计基本是镜像的，由1D卷积层、B个卷积块、两层LSTM和最后一个1D卷积层组成。模型支持流式与非流式，只是padding和归一化不同。</p>
+<p>量化器是由RVQ(Residual Vector Quantization，残差向量量化)实现的，那么它与VQ-VAE中的VQ有何不同呢？单个码本经原作者计算是远远不够的，这样的话需要多个码本来解决问题，多个quantization block对应多个码本，之间用残差连接，相当于后面的quantization block量化的是前一个的误差，具体细节可在参考文献中了解。该部分还加入了一个较小的语言模型，根据当前时刻的RVQ向量来预测下一个时刻的RVQ向量，从而提前完成语音解码的工作。其加速了解码速度。</p>
+<p>模型使用多个判别器来评估解码器恢复的效果，这里用到了GAN模型。</p>
+<h3 id="4-参考文献">4. 参考文献<a hidden class="anchor" aria-hidden="true" href="#4-参考文献">#</a></h3>
+<p>知乎：<a href="https://zhuanlan.zhihu.com/p/672684663">https://zhuanlan.zhihu.com/p/672684663</a></p>
+<p>论文链接：<a href="https://arxiv.org/pdf/2210.13438">https://arxiv.org/pdf/2210.13438</a></p>
+<h2 id="二-vall-e">二. VALL-E<a hidden class="anchor" aria-hidden="true" href="#二-vall-e">#</a></h2>
+<h3 id="1-模型任务语音合成大模型">1. 模型任务：语音合成大模型<a hidden class="anchor" aria-hidden="true" href="#1-模型任务语音合成大模型">#</a></h3>
+<p>上篇作者认为连续的音频数据经过Encodec压缩后变成了离散的数据，那就可以将这些离散的ID视作一个个token，用大量的语音数据训练出一个语音的“大语言模型”。微软推出的VALL-E和VALL-E-X模型做的就是这样的工作。zero-shot TTS!!!</p>
+<h3 id="2-模型过程">2. 模型过程<a hidden class="anchor" aria-hidden="true" href="#2-模型过程">#</a></h3>
+<p>EnCodec由于将语音进行了压缩，重建质量高和压缩程度大，很好地解决了语音和文本在信息密度和长度上的巨大差异。并且Encodec有现成的解码器能够将离散表征转换为声音波形，无需训练额外的声码器。</p>
+<p><img loading="lazy" src="../blog1/VALL-E_codebook.png" alt="VALL-E-1"  />
+</p>
+<p>RQV中生成的离散向量被称为声学词元(acoustic tokens)，与被音素转换模块由文本提示词转换成的因素一同送入模型，预测后续的声学词元，进而被解码器转化为声学波形。</p>
+<p><img loading="lazy" src="../blog1/VALL-E_model.png" alt="VALL-E-2"  />
+</p>
+<p>知乎作者给出的结论：VALLE就是使用Encodec的离散表征来做acoustic tokens，堆大数据来做语音领域的大语言模型。</p>
+<h3 id="3-参考文献">3. 参考文献<a hidden class="anchor" aria-hidden="true" href="#3-参考文献">#</a></h3>
+<p>知乎：<a href="https://zhuanlan.zhihu.com/p/672852107">https://zhuanlan.zhihu.com/p/672852107</a></p>
+<p>论文链接：<a href="https://arxiv.org/pdf/2301.02111">https://arxiv.org/pdf/2301.02111</a></p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://ajkpix.github.io/tags/llm/">LLM</a></li>
+      <li><a href="https://ajkpix.github.io/tags/encodec/">EnCodec</a></li>
+      <li><a href="https://ajkpix.github.io/tags/blog/">Blog</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="next" href="https://ajkpix.github.io/posts/tech/tech/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>博客模板</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2024 <a href="https://ajkpix.github.io/">Ajkpix&#39;s Blog</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = '复制';
+
+        function copyingDone() {
+            copybutton.innerHTML = '已复制！';
+            setTimeout(() => {
+                copybutton.innerHTML = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>
