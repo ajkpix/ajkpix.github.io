@@ -6,22 +6,40 @@
     <description>Recent content in Categories on Ajkpix&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh</language>
-    <lastBuildDate>Fri, 20 Sep 2024 13:00:00 +0800</lastBuildDate><atom:link href="https://ajkpix.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 22 Sep 2024 10:20:00 +0800</lastBuildDate><atom:link href="https://ajkpix.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>LLM</title>
+      <link>https://ajkpix.github.io/categories/llm/</link>
+      <pubDate>Sun, 22 Sep 2024 10:20:00 +0800</pubDate>
+      
+      <guid>https://ajkpix.github.io/categories/llm/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>SLM</title>
+      <link>https://ajkpix.github.io/categories/slm/</link>
+      <pubDate>Sun, 22 Sep 2024 10:20:00 +0800</pubDate>
+      
+      <guid>https://ajkpix.github.io/categories/slm/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Tokenizer</title>
+      <link>https://ajkpix.github.io/categories/tokenizer/</link>
+      <pubDate>Sun, 22 Sep 2024 10:20:00 +0800</pubDate>
+      
+      <guid>https://ajkpix.github.io/categories/tokenizer/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>EnCodec</title>
       <link>https://ajkpix.github.io/categories/encodec/</link>
       <pubDate>Fri, 20 Sep 2024 13:00:00 +0800</pubDate>
       
       <guid>https://ajkpix.github.io/categories/encodec/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>LLM</title>
-      <link>https://ajkpix.github.io/categories/llm/</link>
-      <pubDate>Fri, 20 Sep 2024 13:00:00 +0800</pubDate>
-      
-      <guid>https://ajkpix.github.io/categories/llm/</guid>
       <description></description>
     </item>
     

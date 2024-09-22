@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>SLM on Ajkpix&#39;s Blog</title>
+    <link>https://ajkpix.github.io/categories/slm/</link>
+    <description>Recent content in SLM on Ajkpix&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh</language>
+    <lastBuildDate>Sun, 22 Sep 2024 10:20:00 +0800</lastBuildDate><atom:link href="https://ajkpix.github.io/categories/slm/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>SpeechTokenizer: Unified Speech Tokenizer For Speech Language Models</title>
+      <link>https://ajkpix.github.io/posts/read/read1/</link>
+      <pubDate>Sun, 22 Sep 2024 10:20:00 +0800</pubDate>
+      
+      <guid>https://ajkpix.github.io/posts/read/read1/</guid>
+      <description>Learning of SpeechTokenizer thesis</description>
+    </item>
+    
+  </channel>
+</rss>

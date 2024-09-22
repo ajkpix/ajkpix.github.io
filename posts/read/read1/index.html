@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>SpeechTokenizer: Unified Speech Tokenizer For Speech Language Models | Ajkpix&#39;s Blog</title>
+<meta name="keywords" content="Tokenizer, LLM, SLM">
+<meta name="description" content="Learning of SpeechTokenizer thesis">
+<meta name="author" content="
+作者:&nbsp;Ajkpix">
+<link rel="canonical" href="https://ajkpix.github.io/posts/read/read1/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.css" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.js" onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://ajkpix.github.io/img/%E8%89%BE%E8%8E%89.jpg">
+<link rel="icon" type="image/png" sizes="16x16" href="https://ajkpix.github.io/img/%E8%89%BE%E8%8E%89.jpg">
+<link rel="icon" type="image/png" sizes="32x32" href="https://ajkpix.github.io/img/%E8%89%BE%E8%8E%89.jpg">
+<link rel="apple-touch-icon" href="https://ajkpix.github.io/img/%E8%89%BE%E8%8E%89.jpg">
+<link rel="mask-icon" href="https://ajkpix.github.io/img/%E8%89%BE%E8%8E%89.jpg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="zh" href="https://ajkpix.github.io/posts/read/read1/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+<meta property="og:title" content="SpeechTokenizer: Unified Speech Tokenizer For Speech Language Models" />
+<meta property="og:description" content="Learning of SpeechTokenizer thesis" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://ajkpix.github.io/posts/read/read1/" />
+<meta property="og:image" content="https://ajkpix.github.io/posts/read/read1/Tokenizer_Model.png" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2024-09-22T10:20:00+08:00" />
+<meta property="article:modified_time" content="2024-09-22T10:20:00+08:00" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://ajkpix.github.io/posts/read/read1/Tokenizer_Model.png" />
+<meta name="twitter:title" content="SpeechTokenizer: Unified Speech Tokenizer For Speech Language Models"/>
+<meta name="twitter:description" content="Learning of SpeechTokenizer thesis"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "📚文章",
+      "item": "https://ajkpix.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "📕 阅读",
+      "item": "https://ajkpix.github.io/posts/read/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "SpeechTokenizer: Unified Speech Tokenizer For Speech Language Models",
+      "item": "https://ajkpix.github.io/posts/read/read1/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "SpeechTokenizer: Unified Speech Tokenizer For Speech Language Models",
+  "name": "SpeechTokenizer: Unified Speech Tokenizer For Speech Language Models",
+  "description": "Learning of SpeechTokenizer thesis",
+  "keywords": [
+    "Tokenizer", "LLM", "SLM"
+  ],
+  "articleBody": "0. 摘要 专门设计的、结合两方面的新模型。新的评估测试集SLMTokBench benchmark。\n1. 引言 LLM的卓越表现促进了语音语言模型的发展。在多种语音处理任务中都使用到了离散语音表示。如下图所示。\n语义表征(semantic tokens)通常是自监督的预训练模型，训练目标是掩码语言建模，通过特定中间层对表征进行k-means聚类，表征是一维结构的序列。声学表征(acoustic tokens)通常是神经音频编解码器模型，训练目标是音频重构，通过RVQ(residual vector quantization)进行离散化，表征是由时间步长和量化器两个维度组成的矩阵。\n基于这两种离散语音表征，语音语言模型的建模方法有三种：\n语义表征+外部单元声码器。质量低、声学细节丢失。 以VALL-E这种zero-shot TTS为例的声学表征模型。声学表征中的信息太复杂导致的语音内容不准确。 级联语义表征模型和声学表征模型。级联模型的缺点，以及信息冗余重复、浪费。这三者的表现与作者的模型相比如下表所示。 Accurate Content High-quality Speech Single Tokenizer Semantic LM yes no yes Acoustic LM no yes yes Hierarchical LM yes yes no USLM(thers) no yes yes 因此作者认为理想的语音表征应该保有两个关键特性：\n与文本强对齐。 语音信息的有效保存(损失少)。 因此提出了Speech Language Model Token Benchmark测试集来评估语音表征是否适用于语音语言模型。评估表明语义表征高对齐、低信息，声学表征高信息、低对齐。作者的做法是基于声学表征模型，在RVQ结构中进行信息解耦，通过语义教师指导使得第一个RVQ quantizer生成包含文本信息的表征，后续的quantizer对信息进行补充。\n实验结果表明，USLM在语音重建性能无影响的前提下，在语音处理任务上更强。\n论文贡献为三点:\nSpeechTokenizer，基于Acoustic Tokens保有Semantic Tokens。 SLMTokBench benchmark，适用于评估在语音语言模型上的表现。 USLM，outperforms VALL-E on zero-shot TTS task。 2. 结论 依旧是三点贡献。\n3. 测试集SLMTokBench 根据两个特性来评测模型效果。\n4. SpeechTolenizer 基于LSTM-\u003eBiLSTM的EnCodec，HuBert作为语义教师指导残差量化过程。余弦相似度与伪标签，获得损失。\n",
+  "wordCount" : "918",
+  "inLanguage": "zh",
+  "image":"https://ajkpix.github.io/posts/read/read1/Tokenizer_Model.png","datePublished": "2024-09-22T10:20:00+08:00",
+  "dateModified": "2024-09-22T10:20:00+08:00",
+  "author":[{
+    "@type": "Person",
+    "name": "Ajkpix"
+  }],
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://ajkpix.github.io/posts/read/read1/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Ajkpix's Blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://ajkpix.github.io/img/%E8%89%BE%E8%8E%89.jpg"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://ajkpix.github.io/" accesskey="h" title="Ajkpixs Blog (Alt + H)">
+                <img src="https://ajkpix.github.io/img/%E8%89%BE%E8%8E%89.jpg" alt="" aria-label="logo"
+                    height="40">Ajkpixs Blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                <ul class="lang-switch"><li>|</li>
+                </ul>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://ajkpix.github.io/search" title="🔍 搜索 (Alt &#43; /)" accesskey=/>
+                    <span>🔍 搜索</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://ajkpix.github.io/" title="🏠 主页">
+                    <span>🏠 主页</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://ajkpix.github.io/posts" title="📚 文章">
+                    <span>📚 文章</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://ajkpix.github.io/tags" title="🧩 标签">
+                    <span>🧩 标签</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://ajkpix.github.io/archives/" title="⏱️ 时间轴">
+                    <span>⏱️ 时间轴</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://ajkpix.github.io/about" title="🙋🏻‍♂️ 关于">
+                    <span>🙋🏻‍♂️ 关于</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://ajkpix.github.io/links" title="🤝 友链">
+                    <span>🤝 友链</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://ajkpix.github.io/">主页</a>&nbsp;»&nbsp;<a href="https://ajkpix.github.io/posts/">📚文章</a>&nbsp;»&nbsp;<a href="https://ajkpix.github.io/posts/read/">📕 阅读</a></div>
+    <h1 class="post-title">
+      SpeechTokenizer: Unified Speech Tokenizer For Speech Language Models
+    </h1>
+    <div class="post-description">
+      Learning of SpeechTokenizer thesis
+    </div>
+    <div class="post-meta">
+
+<style>
+    i[id*="post_meta_style"] {
+        display: flex;
+        align-items: center;
+        margin: 0 0 10px 0;
+    }
+
+    .parent-post-meta {
+        display: flex;
+        flex-wrap: wrap;
+        opacity: 0.8;
+    }
+</style>
+
+<span class="parent-post-meta">
+    <span id="post_meta_style_1">
+        <span class="fa fa-calendar-check-o"></span>
+        <span>2024-09-22
+            &nbsp;&nbsp;
+        </span>
+    </span>
+    
+    
+    
+    
+    
+    
+    
+    <span id="post_meta_style_3">
+        <span class="fa fa-file-word-o"></span>
+        <span>918字
+            &nbsp;&nbsp;
+        </span>
+    </span>
+    <span id="post_meta_style_4">
+        <span class="fa fa-clock-o"></span>
+        <span>2分钟
+            &nbsp;&nbsp;
+        </span>
+    </span>
+    <span id="post_meta_style_5">
+        <span class="fa fa-user-o"></span>
+        <span>
+作者:&nbsp;Ajkpix
+            &nbsp;&nbsp;
+        </span>
+    </span>
+    <span id="post_meta_style_6">
+        <span class="fa fa-tags" style="opacity: 0.8"></span>
+        <span>
+            <span class="post-tags-meta">
+                <a href="https://ajkpix.github.io/tags/tokenizer/" style="color: var(--secondary)!important;">Tokenizer</a>
+                &nbsp;<a href="https://ajkpix.github.io/tags/llm/" style="color: var(--secondary)!important;">LLM</a>
+                &nbsp;<a href="https://ajkpix.github.io/tags/slm/" style="color: var(--secondary)!important;">SLM</a>
+                &nbsp;<a href="https://ajkpix.github.io/tags/read/" style="color: var(--secondary)!important;">Read</a>
+            </span>
+        </span>
+    </span>
+</span>
+
+</div>
+  </header> 
+<figure class="entry-cover"><img loading="lazy" src="https://ajkpix.github.io/posts/read/read1/Tokenizer_Model.png" alt="论文首图">
+        <p>论文首图</p>
+</figure><div class="toc">
+    <details  open>
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">目录</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#0-%e6%91%98%e8%a6%81" aria-label="0. 摘要">0. 摘要</a></li>
+                <li>
+                    <a href="#1-%e5%bc%95%e8%a8%80" aria-label="1. 引言">1. 引言</a></li>
+                <li>
+                    <a href="#2-%e7%bb%93%e8%ae%ba" aria-label="2. 结论">2. 结论</a></li>
+                <li>
+                    <a href="#3-%e6%b5%8b%e8%af%95%e9%9b%86slmtokbench" aria-label="3. 测试集SLMTokBench">3. 测试集SLMTokBench</a></li>
+                <li>
+                    <a href="#4-speechtolenizer" aria-label="4. SpeechTolenizer">4. SpeechTolenizer</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h2 id="0-摘要">0. 摘要<a hidden class="anchor" aria-hidden="true" href="#0-摘要">#</a></h2>
+<p>专门设计的、结合两方面的新模型。新的评估测试集SLMTokBench benchmark。</p>
+<h2 id="1-引言">1. 引言<a hidden class="anchor" aria-hidden="true" href="#1-引言">#</a></h2>
+<p>LLM的卓越表现促进了语音语言模型的发展。在多种语音处理任务中都使用到了离散语音表示。如下图所示。</p>
+<p><img loading="lazy" src="../read1/%e7%a6%bb%e6%95%a3%e8%af%ad%e9%9f%b3%e8%a1%a8%e5%be%81.png" alt="离散语音表征"  />
+</p>
+<p>语义表征(semantic tokens)通常是自监督的预训练模型，训练目标是掩码语言建模，通过特定中间层对表征进行k-means聚类，表征是一维结构的序列。声学表征(acoustic tokens)通常是神经音频编解码器模型，训练目标是音频重构，通过RVQ(residual vector quantization)进行离散化，表征是由时间步长和量化器两个维度组成的矩阵。</p>
+<p>基于这两种离散语音表征，语音语言模型的建模方法有三种：</p>
+<ul>
+<li>语义表征+外部单元声码器。质量低、声学细节丢失。</li>
+<li>以VALL-E这种zero-shot TTS为例的声学表征模型。声学表征中的信息太复杂导致的语音内容不准确。</li>
+<li>级联语义表征模型和声学表征模型。级联模型的缺点，以及信息冗余重复、浪费。这三者的表现与作者的模型相比如下表所示。</li>
+</ul>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left"></th>
+          <th style="text-align: left">Accurate Content</th>
+          <th style="text-align: left">High-quality Speech</th>
+          <th style="text-align: left">Single Tokenizer</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">Semantic LM</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">no</td>
+          <td style="text-align: left">yes</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Acoustic LM</td>
+          <td style="text-align: left">no</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">yes</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Hierarchical LM</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">no</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">USLM(thers)</td>
+          <td style="text-align: left">no</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">yes</td>
+      </tr>
+  </tbody>
+</table>
+<p>因此作者认为理想的语音表征应该保有两个关键特性：</p>
+<ul>
+<li>与文本强对齐。</li>
+<li>语音信息的有效保存(损失少)。</li>
+</ul>
+<p>因此提出了Speech Language Model Token Benchmark测试集来评估语音表征是否适用于语音语言模型。评估表明语义表征高对齐、低信息，声学表征高信息、低对齐。作者的做法是基于声学表征模型，在RVQ结构中进行信息解耦，通过语义教师指导使得第一个RVQ quantizer生成包含文本信息的表征，后续的quantizer对信息进行补充。</p>
+<p>实验结果表明，USLM在语音重建性能无影响的前提下，在语音处理任务上更强。</p>
+<p>论文贡献为三点:</p>
+<ul>
+<li>SpeechTokenizer，基于Acoustic Tokens保有Semantic Tokens。</li>
+<li>SLMTokBench benchmark，适用于评估在语音语言模型上的表现。</li>
+<li>USLM，outperforms VALL-E on zero-shot TTS task。</li>
+</ul>
+<h2 id="2-结论">2. 结论<a hidden class="anchor" aria-hidden="true" href="#2-结论">#</a></h2>
+<p>依旧是三点贡献。</p>
+<h2 id="3-测试集slmtokbench">3. 测试集SLMTokBench<a hidden class="anchor" aria-hidden="true" href="#3-测试集slmtokbench">#</a></h2>
+<p>根据两个特性来评测模型效果。</p>
+<h2 id="4-speechtolenizer">4. SpeechTolenizer<a hidden class="anchor" aria-hidden="true" href="#4-speechtolenizer">#</a></h2>
+<p><img loading="lazy" src="../read1/Model.png" alt="Model"  />
+</p>
+<p>基于LSTM-&gt;BiLSTM的EnCodec，HuBert作为语义教师指导残差量化过程。余弦相似度与伪标签，获得损失。</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://ajkpix.github.io/tags/tokenizer/">Tokenizer</a></li>
+      <li><a href="https://ajkpix.github.io/tags/llm/">LLM</a></li>
+      <li><a href="https://ajkpix.github.io/tags/slm/">SLM</a></li>
+      <li><a href="https://ajkpix.github.io/tags/read/">Read</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="next" href="https://ajkpix.github.io/posts/blog/blog1/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>EnCodec在大语言模型上的调研</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2024 <a href="https://ajkpix.github.io/">Ajkpix&#39;s Blog</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = '复制';
+
+        function copyingDone() {
+            copybutton.innerHTML = '已复制！';
+            setTimeout(() => {
+                copybutton.innerHTML = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>
