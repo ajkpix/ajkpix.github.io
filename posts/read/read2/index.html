@@ -5,13 +5,14 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
-<title>LLM | Ajkpix&#39;s Blog</title>
-<meta name="keywords" content="">
-<meta name="description" content="">
+<title>Towards audio language modeling - an overview | Ajkpix&#39;s Blog</title>
+<meta name="keywords" content="Tokenizer, LLM, SLM">
+<meta name="description" content="Learning of an overview about audio language modeling">
 <meta name="author" content="
 作者:&nbsp;Ajkpix">
-<link rel="canonical" href="https://ajkpix.github.io/tags/llm/">
+<link rel="canonical" href="https://ajkpix.github.io/posts/read/read2/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.css" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.js" onload="hljs.initHighlightingOnLoad();"></script>
 <link rel="icon" href="https://ajkpix.github.io/img/%E8%89%BE%E8%8E%89.jpg">
 <link rel="icon" type="image/png" sizes="16x16" href="https://ajkpix.github.io/img/%E8%89%BE%E8%8E%89.jpg">
 <link rel="icon" type="image/png" sizes="32x32" href="https://ajkpix.github.io/img/%E8%89%BE%E8%8E%89.jpg">
@@ -19,8 +20,7 @@
 <link rel="mask-icon" href="https://ajkpix.github.io/img/%E8%89%BE%E8%8E%89.jpg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" type="application/rss+xml" href="https://ajkpix.github.io/tags/llm/index.xml">
-<link rel="alternate" hreflang="zh" href="https://ajkpix.github.io/tags/llm/">
+<link rel="alternate" hreflang="zh" href="https://ajkpix.github.io/posts/read/read2/">
 <noscript>
     <style>
         #theme-toggle,
@@ -58,18 +58,82 @@
 
     </style>
 </noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
-<meta property="og:title" content="LLM" />
-<meta property="og:description" content="" />
-<meta property="og:type" content="website" />
-<meta property="og:url" content="https://ajkpix.github.io/tags/llm/" />
+<meta property="og:title" content="Towards audio language modeling - an overview" />
+<meta property="og:description" content="Learning of an overview about audio language modeling" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://ajkpix.github.io/posts/read/read2/" />
+<meta property="og:image" content="https://ajkpix.github.io/posts/read/read2/%E5%8F%91%E5%B1%95.png" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2024-09-27T22:50:00+08:00" />
+<meta property="article:modified_time" content="2024-09-27T22:50:00+08:00" />
 
-<meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="LLM"/>
-<meta name="twitter:description" content=""/>
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://ajkpix.github.io/posts/read/read2/%E5%8F%91%E5%B1%95.png" />
+<meta name="twitter:title" content="Towards audio language modeling - an overview"/>
+<meta name="twitter:description" content="Learning of an overview about audio language modeling"/>
 
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "📚文章",
+      "item": "https://ajkpix.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "📕 阅读",
+      "item": "https://ajkpix.github.io/posts/read/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "Towards audio language modeling - an overview",
+      "item": "https://ajkpix.github.io/posts/read/read2/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Towards audio language modeling - an overview",
+  "name": "Towards audio language modeling - an overview",
+  "description": "Learning of an overview about audio language modeling",
+  "keywords": [
+    "Tokenizer", "LLM", "SLM"
+  ],
+  "articleBody": "1. 小小总结 缘起压缩传数据，后来这种离散化连续语音音频很适用于语音语言模型。\nSoundStream为万恶之源。\n模型名称 模型结构 训练目标 SoundStream 编解码器+量化器 语音重建+GAN SoundStrorm EnCodec SoundStream+LSTM+Transformer 语音重建+GAN AudioDec EnCodec+组卷积 +HiFi-GAN AcademiCodec 组残差矢量量化 SpeechTokenizer 集成语义表征和声学表征 Descript-audio-codec (DAC) 周期激励函数等 FunCodec 频域编解码器 ",
+  "wordCount" : "143",
+  "inLanguage": "zh",
+  "image":"https://ajkpix.github.io/posts/read/read2/%E5%8F%91%E5%B1%95.png","datePublished": "2024-09-27T22:50:00+08:00",
+  "dateModified": "2024-09-27T22:50:00+08:00",
+  "author":[{
+    "@type": "Person",
+    "name": "Ajkpix"
+  }],
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://ajkpix.github.io/posts/read/read2/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Ajkpix's Blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://ajkpix.github.io/img/%E8%89%BE%E8%8E%89.jpg"
+    }
+  }
+}
+</script>
 </head>
 
-<body class="list" id="top">
+<body class="" id="top">
 <script>
     if (localStorage.getItem("pref-theme") === "dark") {
         document.body.classList.add('dark');
@@ -151,26 +215,18 @@
         </ul>
     </nav>
 </header>
-<main class="main"> 
-<header class="page-header"><div class="breadcrumbs"><a href="https://ajkpix.github.io/">主页</a>&nbsp;»&nbsp;<a href="https://ajkpix.github.io/tags/">🧩 标签</a></div>
-  <h1>
-    LLM
-  </h1>
-</header>
+<main class="main">
 
-<article class="post-entry tag-entry"> 
-<figure class="entry-cover"><img loading="lazy" src="https://ajkpix.github.io/posts/read/read2/%E5%8F%91%E5%B1%95.png" alt="发展历程">
-</figure>
-  <header class="entry-header">
-    <h2>Towards audio language modeling - an overview
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>1. 小小总结 缘起压缩传数据，后来这种离散化连续语音音频很适用于语音语言模型。
-SoundStream为万恶之源。
-模型名称 模型结构 训练目标 SoundStream 编解码器&#43;量化器 语音重建&#43;GAN SoundStrorm EnCodec SoundStream&#43;LSTM&#43;Transformer 语音重建&#43;GAN AudioDec EnCodec&#43;组卷积 &#43;HiFi-GAN AcademiCodec 组残差矢量量化 SpeechTokenizer 集成语义表征和声学表征 Descript-audio-codec (DAC) 周期激励函数等 FunCodec 频域编解码器 </p>
-  </div>
-  <footer class="entry-footer">
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://ajkpix.github.io/">主页</a>&nbsp;»&nbsp;<a href="https://ajkpix.github.io/posts/">📚文章</a>&nbsp;»&nbsp;<a href="https://ajkpix.github.io/posts/read/">📕 阅读</a></div>
+    <h1 class="post-title">
+      Towards audio language modeling - an overview
+    </h1>
+    <div class="post-description">
+      Learning of an overview about audio language modeling
+    </div>
+    <div class="post-meta">
 
 <style>
     i[id*="post_meta_style"] {
@@ -230,159 +286,110 @@ SoundStream为万恶之源。
             </span>
         </span>
     </span>
-</span></footer>
-  <a class="entry-link" aria-label="post link to Towards audio language modeling - an overview" href="https://ajkpix.github.io/posts/read/read2/"></a>
-</article>
+</span>
 
-<article class="post-entry tag-entry"> 
-<figure class="entry-cover"><img loading="lazy" src="https://ajkpix.github.io/posts/read/read1/Tokenizer_Model.png" alt="论文首图">
-</figure>
-  <header class="entry-header">
-    <h2>SpeechTokenizer: Unified Speech Tokenizer For Speech Language Models
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>0. 摘要 专门设计的、结合两方面的新模型。新的评估测试集SLMTokBench benchmark。
-1. 引言 LLM的卓越表现促进了语音语言模型的发展。在多种语音处理任务中都使用到了离散语音表示。如下图所示。
-语义表征(semantic tokens)通常是自监督的预训练模型，训练目标是掩码语言建模，通过特定中间层对表征进行k-means聚类，表征是一维结构的序列。声学表征(acoustic tokens)通常是神经音频编解码器模型，训练目标是音频重构，通过RVQ(residual vector quantization)进行离散化，表征是由时间步长和量化器两个维度组成的矩阵。
-...</p>
+</div>
+  </header> 
+<figure class="entry-cover"><img loading="lazy" src="https://ajkpix.github.io/posts/read/read2/%E5%8F%91%E5%B1%95.png" alt="发展历程">
+        <p>发展历程</p>
+</figure><div class="toc">
+    <details  open>
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">目录</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#1-%e5%b0%8f%e5%b0%8f%e6%80%bb%e7%bb%93" aria-label="1. 小小总结">1. 小小总结</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h2 id="1-小小总结">1. 小小总结<a hidden class="anchor" aria-hidden="true" href="#1-小小总结">#</a></h2>
+<p>缘起压缩传数据，后来这种离散化连续语音音频很适用于语音语言模型。</p>
+<p>SoundStream为万恶之源。</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">模型名称</th>
+          <th style="text-align: left">模型结构</th>
+          <th style="text-align: left">训练目标</th>
+          <th style="text-align: left"></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">SoundStream</td>
+          <td style="text-align: left">编解码器+量化器</td>
+          <td style="text-align: left">语音重建+GAN</td>
+          <td style="text-align: left"></td>
+      </tr>
+      <tr>
+          <td style="text-align: left">SoundStrorm</td>
+          <td style="text-align: left"></td>
+          <td style="text-align: left"></td>
+          <td style="text-align: left"></td>
+      </tr>
+      <tr>
+          <td style="text-align: left">EnCodec</td>
+          <td style="text-align: left">SoundStream+LSTM+Transformer</td>
+          <td style="text-align: left">语音重建+GAN</td>
+          <td style="text-align: left"></td>
+      </tr>
+      <tr>
+          <td style="text-align: left">AudioDec</td>
+          <td style="text-align: left">EnCodec+组卷积</td>
+          <td style="text-align: left">+HiFi-GAN</td>
+          <td style="text-align: left"></td>
+      </tr>
+      <tr>
+          <td style="text-align: left">AcademiCodec</td>
+          <td style="text-align: left">组残差矢量量化</td>
+          <td style="text-align: left"></td>
+          <td style="text-align: left"></td>
+      </tr>
+      <tr>
+          <td style="text-align: left">SpeechTokenizer</td>
+          <td style="text-align: left">集成语义表征和声学表征</td>
+          <td style="text-align: left"></td>
+          <td style="text-align: left"></td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Descript-audio-codec (DAC)</td>
+          <td style="text-align: left"></td>
+          <td style="text-align: left">周期激励函数等</td>
+          <td style="text-align: left"></td>
+      </tr>
+      <tr>
+          <td style="text-align: left">FunCodec</td>
+          <td style="text-align: left">频域编解码器</td>
+          <td style="text-align: left"></td>
+          <td style="text-align: left"></td>
+      </tr>
+  </tbody>
+</table>
+
+
   </div>
-  <footer class="entry-footer">
 
-<style>
-    i[id*="post_meta_style"] {
-        display: flex;
-        align-items: center;
-        margin: 0 0 10px 0;
-    }
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://ajkpix.github.io/tags/tokenizer/">Tokenizer</a></li>
+      <li><a href="https://ajkpix.github.io/tags/llm/">LLM</a></li>
+      <li><a href="https://ajkpix.github.io/tags/slm/">SLM</a></li>
+      <li><a href="https://ajkpix.github.io/tags/read/">Read</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="next" href="https://ajkpix.github.io/posts/read/read1/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>SpeechTokenizer: Unified Speech Tokenizer For Speech Language Models</span>
+  </a>
+</nav>
 
-    .parent-post-meta {
-        display: flex;
-        flex-wrap: wrap;
-        opacity: 0.8;
-    }
-</style>
-
-<span class="parent-post-meta">
-    <span id="post_meta_style_1">
-        <span class="fa fa-calendar-check-o"></span>
-        <span>2024-09-22
-            &nbsp;&nbsp;
-        </span>
-    </span>
-    
-    
-    
-    
-    
-    
-    
-    <span id="post_meta_style_3">
-        <span class="fa fa-file-word-o"></span>
-        <span>959字
-            &nbsp;&nbsp;
-        </span>
-    </span>
-    <span id="post_meta_style_4">
-        <span class="fa fa-clock-o"></span>
-        <span>2分钟
-            &nbsp;&nbsp;
-        </span>
-    </span>
-    <span id="post_meta_style_5">
-        <span class="fa fa-user-o"></span>
-        <span>
-作者:&nbsp;Ajkpix
-            &nbsp;&nbsp;
-        </span>
-    </span>
-    <span id="post_meta_style_6">
-        <span class="fa fa-tags" style="opacity: 0.8"></span>
-        <span>
-            <span class="post-tags-meta">
-                <a href="https://ajkpix.github.io/tags/tokenizer/" style="color: var(--secondary)!important;">Tokenizer</a>
-                &nbsp;<a href="https://ajkpix.github.io/tags/llm/" style="color: var(--secondary)!important;">LLM</a>
-                &nbsp;<a href="https://ajkpix.github.io/tags/slm/" style="color: var(--secondary)!important;">SLM</a>
-                &nbsp;<a href="https://ajkpix.github.io/tags/read/" style="color: var(--secondary)!important;">Read</a>
-            </span>
-        </span>
-    </span>
-</span></footer>
-  <a class="entry-link" aria-label="post link to SpeechTokenizer: Unified Speech Tokenizer For Speech Language Models" href="https://ajkpix.github.io/posts/read/read1/"></a>
-</article>
-
-<article class="post-entry tag-entry"> 
-<figure class="entry-cover"><img loading="lazy" src="https://ajkpix.github.io/posts/blog/blog1/%E5%B0%81%E7%9A%AE.png" alt="语音大模型">
-</figure>
-  <header class="entry-header">
-    <h2>EnCodec在大语言模型上的调研
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>一. EnCodec 1. 模型任务 EnCodec是在SoundStream模型的基础上提出的，用于实现音频数据的高效压缩。其被提出是为了解决音频数据的实时传输，因为要保证数据传输的实时性，所以需要对音频数据进行压缩，同时也要保证被压缩的质量。该工作就是利用神经网络来解决压缩与恢复工作。
-...</p>
-  </div>
-  <footer class="entry-footer">
-
-<style>
-    i[id*="post_meta_style"] {
-        display: flex;
-        align-items: center;
-        margin: 0 0 10px 0;
-    }
-
-    .parent-post-meta {
-        display: flex;
-        flex-wrap: wrap;
-        opacity: 0.8;
-    }
-</style>
-
-<span class="parent-post-meta">
-    <span id="post_meta_style_1">
-        <span class="fa fa-calendar-check-o"></span>
-        <span>2024-09-20
-            &nbsp;&nbsp;
-        </span>
-    </span>
-    
-    
-    
-    
-    
-    
-    
-    <span id="post_meta_style_3">
-        <span class="fa fa-file-word-o"></span>
-        <span>1860字
-            &nbsp;&nbsp;
-        </span>
-    </span>
-    <span id="post_meta_style_4">
-        <span class="fa fa-clock-o"></span>
-        <span>4分钟
-            &nbsp;&nbsp;
-        </span>
-    </span>
-    <span id="post_meta_style_5">
-        <span class="fa fa-user-o"></span>
-        <span>
-作者:&nbsp;Ajkpix
-            &nbsp;&nbsp;
-        </span>
-    </span>
-    <span id="post_meta_style_6">
-        <span class="fa fa-tags" style="opacity: 0.8"></span>
-        <span>
-            <span class="post-tags-meta">
-                <a href="https://ajkpix.github.io/tags/llm/" style="color: var(--secondary)!important;">LLM</a>
-                &nbsp;<a href="https://ajkpix.github.io/tags/encodec/" style="color: var(--secondary)!important;">EnCodec</a>
-                &nbsp;<a href="https://ajkpix.github.io/tags/blog/" style="color: var(--secondary)!important;">Blog</a>
-            </span>
-        </span>
-    </span>
-</span></footer>
-  <a class="entry-link" aria-label="post link to EnCodec在大语言模型上的调研" href="https://ajkpix.github.io/posts/blog/blog1/"></a>
+  </footer>
 </article>
     </main>
     
@@ -453,6 +460,53 @@ SoundStream为万恶之源。
         }
     })
 
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = '复制';
+
+        function copyingDone() {
+            copybutton.innerHTML = '已复制！';
+            setTimeout(() => {
+                copybutton.innerHTML = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
 </script>
 </body>
 
