@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
-<title>Towards audio language modeling - an overview | Ajkpix&#39;s Blog</title>
+<title>两则综述 | Ajkpix&#39;s Blog</title>
 <meta name="keywords" content="Tokenizer, LLM, SLM">
 <meta name="description" content="Learning of an overview about audio language modeling">
 <meta name="author" content="
@@ -58,7 +58,7 @@
 
     </style>
 </noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
-<meta property="og:title" content="Towards audio language modeling - an overview" />
+<meta property="og:title" content="两则综述" />
 <meta property="og:description" content="Learning of an overview about audio language modeling" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://ajkpix.github.io/posts/read/read2/" />
@@ -68,7 +68,7 @@
 
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:image" content="https://ajkpix.github.io/posts/read/read2/%E5%8F%91%E5%B1%95.png" />
-<meta name="twitter:title" content="Towards audio language modeling - an overview"/>
+<meta name="twitter:title" content="两则综述"/>
 <meta name="twitter:description" content="Learning of an overview about audio language modeling"/>
 
 
@@ -92,7 +92,7 @@
     {
       "@type": "ListItem",
       "position":  3 ,
-      "name": "Towards audio language modeling - an overview",
+      "name": "两则综述",
       "item": "https://ajkpix.github.io/posts/read/read2/"
     }
   ]
@@ -102,14 +102,14 @@
 {
   "@context": "https://schema.org",
   "@type": "BlogPosting",
-  "headline": "Towards audio language modeling - an overview",
-  "name": "Towards audio language modeling - an overview",
+  "headline": "两则综述",
+  "name": "两则综述",
   "description": "Learning of an overview about audio language modeling",
   "keywords": [
     "Tokenizer", "LLM", "SLM"
   ],
-  "articleBody": "1. 小小总结 缘起压缩传数据，后来这种离散化连续语音音频很适用于语音语言模型。\nSoundStream为万恶之源。\n模型名称 模型结构 训练目标 SoundStream 编解码器+量化器 语音重建+GAN SoundStrorm EnCodec SoundStream+LSTM+Transformer 语音重建+GAN AudioDec EnCodec+组卷积 +HiFi-GAN AcademiCodec 组残差矢量量化 SpeechTokenizer 集成语义表征和声学表征 Descript-audio-codec (DAC) 周期激励函数等 FunCodec 频域编解码器 ",
-  "wordCount" : "143",
+  "articleBody": "1. Towards audio language modeling - an overview 缘起压缩传数据，后来这种离散化连续语音音频很适用于语音语言模型。\nSoundStream为万恶之源。\nⅠ. SoundStream (1) 模型 编码器——将raw audio映射到嵌入序列 量化器——用一组有限码本的矢量和代替每个嵌入 解码器——从量化嵌入产生有损的重建\n所有卷积均为因果卷积 训练和离线推理只对过去padding，流式推理不使用padding 膨胀卷积（扩张卷积，空洞卷积）含于每个残差块，间隔采样 跨步卷积 每次下采样channel都乘2，最后的Conv1D将维度限制为D 使用ELU激活函数，不进行任何的归一化 FiLM(feature-wise Linear Modulation) conditioning，一种调节机制。\n量化器的输出用bps表达。采样率为24000的话，经过编码器的处理后被压缩为1/320——75，相当于每秒75个采样点。那么如果针对于6000bps而言，6000 bps / 75 HZ = 80 bit。那么需要存2^80个矢量的码本，太大太不可行。 多个量化器进行残差分摊，分摊针对的是bit，那么每个量化器只需要2^(80/8)=1024个矢量的码本。 量化算法来源于VQ-VAE-2，额外用到k-means进行初始化，码本向量每用到随机替换。\n(2) 训练 两种判别器\nⅡ. EnCodec Ⅲ. AudioDec Ⅳ. AcademicCodec Ⅴ. SoundStorm Ⅵ. DAC Ⅶ. SpeechTokenizer Ⅷ. FuncCodec A. AudioLM B. AudioGen C. VALL-E D. MusicLM E. VALL-E X F. VioLA G. MusicGen H. AudioPaLM I. SpeechX J. LauraGPT K. UniAudioS 2. Sparks of Large Audio Models: A Survey and Outlook ",
+  "wordCount" : "544",
   "inLanguage": "zh",
   "image":"https://ajkpix.github.io/posts/read/read2/%E5%8F%91%E5%B1%95.png","datePublished": "2024-09-27T22:50:00+08:00",
   "dateModified": "2024-09-27T22:50:00+08:00",
@@ -221,7 +221,7 @@
   <header class="post-header">
     <div class="breadcrumbs"><a href="https://ajkpix.github.io/">主页</a>&nbsp;»&nbsp;<a href="https://ajkpix.github.io/posts/">📚文章</a>&nbsp;»&nbsp;<a href="https://ajkpix.github.io/posts/read/">📕 阅读</a></div>
     <h1 class="post-title">
-      Towards audio language modeling - an overview
+      两则综述
     </h1>
     <div class="post-description">
       Learning of an overview about audio language modeling
@@ -258,13 +258,13 @@
     
     <span id="post_meta_style_3">
         <span class="fa fa-file-word-o"></span>
-        <span>143字
+        <span>544字
             &nbsp;&nbsp;
         </span>
     </span>
     <span id="post_meta_style_4">
         <span class="fa fa-clock-o"></span>
-        <span>1分钟
+        <span>2分钟
             &nbsp;&nbsp;
         </span>
     </span>
@@ -300,76 +300,108 @@
 
         <div class="inner"><ul>
                 <li>
-                    <a href="#1-%e5%b0%8f%e5%b0%8f%e6%80%bb%e7%bb%93" aria-label="1. 小小总结">1. 小小总结</a>
+                    <a href="#1-towards-audio-language-modeling---an-overview" aria-label="1. Towards audio language modeling - an overview">1. Towards audio language modeling - an overview</a><ul>
+                        
+                <li>
+                    <a href="#-soundstream" aria-label="Ⅰ. SoundStream">Ⅰ. SoundStream</a><ul>
+                        
+                <li>
+                    <a href="#1-%e6%a8%a1%e5%9e%8b" aria-label="(1) 模型">(1) 模型</a></li>
+                <li>
+                    <a href="#2-%e8%ae%ad%e7%bb%83" aria-label="(2) 训练">(2) 训练</a></li></ul>
+                </li>
+                <li>
+                    <a href="#-encodec" aria-label="Ⅱ. EnCodec">Ⅱ. EnCodec</a></li>
+                <li>
+                    <a href="#-audiodec" aria-label="Ⅲ. AudioDec">Ⅲ. AudioDec</a></li>
+                <li>
+                    <a href="#-academiccodec" aria-label="Ⅳ. AcademicCodec">Ⅳ. AcademicCodec</a></li>
+                <li>
+                    <a href="#-soundstorm" aria-label="Ⅴ. SoundStorm">Ⅴ. SoundStorm</a></li>
+                <li>
+                    <a href="#-dac" aria-label="Ⅵ. DAC">Ⅵ. DAC</a></li>
+                <li>
+                    <a href="#-speechtokenizer" aria-label="Ⅶ. SpeechTokenizer">Ⅶ. SpeechTokenizer</a></li>
+                <li>
+                    <a href="#-funccodec" aria-label="Ⅷ. FuncCodec">Ⅷ. FuncCodec</a></li>
+                <li>
+                    <a href="#a-audiolm" aria-label="A. AudioLM">A. AudioLM</a></li>
+                <li>
+                    <a href="#b-audiogen" aria-label="B. AudioGen">B. AudioGen</a></li>
+                <li>
+                    <a href="#c-vall-e" aria-label="C. VALL-E">C. VALL-E</a></li>
+                <li>
+                    <a href="#d-musiclm" aria-label="D. MusicLM">D. MusicLM</a></li>
+                <li>
+                    <a href="#e-vall-e-x" aria-label="E. VALL-E X">E. VALL-E X</a></li>
+                <li>
+                    <a href="#f-viola" aria-label="F. VioLA">F. VioLA</a></li>
+                <li>
+                    <a href="#g-musicgen" aria-label="G. MusicGen">G. MusicGen</a></li>
+                <li>
+                    <a href="#h-audiopalm" aria-label="H. AudioPaLM">H. AudioPaLM</a></li>
+                <li>
+                    <a href="#i-speechx" aria-label="I. SpeechX">I. SpeechX</a></li>
+                <li>
+                    <a href="#j-lauragpt" aria-label="J. LauraGPT">J. LauraGPT</a></li>
+                <li>
+                    <a href="#k-uniaudios" aria-label="K. UniAudioS">K. UniAudioS</a></li></ul>
+                </li>
+                <li>
+                    <a href="#2-sparks-of-large-audio-models-a-survey-and-outlook" aria-label="2. Sparks of Large Audio Models: A Survey and Outlook">2. Sparks of Large Audio Models: A Survey and Outlook</a>
                 </li>
             </ul>
         </div>
     </details>
 </div>
 
-  <div class="post-content"><h2 id="1-小小总结">1. 小小总结<a hidden class="anchor" aria-hidden="true" href="#1-小小总结">#</a></h2>
+  <div class="post-content"><h2 id="1-towards-audio-language-modeling---an-overview">1. Towards audio language modeling - an overview<a hidden class="anchor" aria-hidden="true" href="#1-towards-audio-language-modeling---an-overview">#</a></h2>
 <p>缘起压缩传数据，后来这种离散化连续语音音频很适用于语音语言模型。</p>
 <p>SoundStream为万恶之源。</p>
-<table>
-  <thead>
-      <tr>
-          <th style="text-align: left">模型名称</th>
-          <th style="text-align: left">模型结构</th>
-          <th style="text-align: left">训练目标</th>
-          <th style="text-align: left"></th>
-      </tr>
-  </thead>
-  <tbody>
-      <tr>
-          <td style="text-align: left">SoundStream</td>
-          <td style="text-align: left">编解码器+量化器</td>
-          <td style="text-align: left">语音重建+GAN</td>
-          <td style="text-align: left"></td>
-      </tr>
-      <tr>
-          <td style="text-align: left">SoundStrorm</td>
-          <td style="text-align: left"></td>
-          <td style="text-align: left"></td>
-          <td style="text-align: left"></td>
-      </tr>
-      <tr>
-          <td style="text-align: left">EnCodec</td>
-          <td style="text-align: left">SoundStream+LSTM+Transformer</td>
-          <td style="text-align: left">语音重建+GAN</td>
-          <td style="text-align: left"></td>
-      </tr>
-      <tr>
-          <td style="text-align: left">AudioDec</td>
-          <td style="text-align: left">EnCodec+组卷积</td>
-          <td style="text-align: left">+HiFi-GAN</td>
-          <td style="text-align: left"></td>
-      </tr>
-      <tr>
-          <td style="text-align: left">AcademiCodec</td>
-          <td style="text-align: left">组残差矢量量化</td>
-          <td style="text-align: left"></td>
-          <td style="text-align: left"></td>
-      </tr>
-      <tr>
-          <td style="text-align: left">SpeechTokenizer</td>
-          <td style="text-align: left">集成语义表征和声学表征</td>
-          <td style="text-align: left"></td>
-          <td style="text-align: left"></td>
-      </tr>
-      <tr>
-          <td style="text-align: left">Descript-audio-codec (DAC)</td>
-          <td style="text-align: left"></td>
-          <td style="text-align: left">周期激励函数等</td>
-          <td style="text-align: left"></td>
-      </tr>
-      <tr>
-          <td style="text-align: left">FunCodec</td>
-          <td style="text-align: left">频域编解码器</td>
-          <td style="text-align: left"></td>
-          <td style="text-align: left"></td>
-      </tr>
-  </tbody>
-</table>
+<h3 id="-soundstream">Ⅰ. SoundStream<a hidden class="anchor" aria-hidden="true" href="#-soundstream">#</a></h3>
+<h4 id="1-模型">(1) 模型<a hidden class="anchor" aria-hidden="true" href="#1-模型">#</a></h4>
+<p>编码器——将raw audio映射到嵌入序列<br/>
+量化器——用一组有限码本的矢量和代替每个嵌入<br/>
+解码器——从量化嵌入产生有损的重建<br/></p>
+<p><img loading="lazy" src="../read2/encoder-decoder.png" alt="en-de"  />
+</p>
+<p>所有卷积均为因果卷积<br/>
+训练和离线推理只对过去padding，流式推理不使用padding<br/>
+膨胀卷积（扩张卷积，空洞卷积）含于每个残差块，间隔采样<br/>
+跨步卷积<br/>
+每次下采样channel都乘2，最后的Conv1D将维度限制为D<br/>
+使用ELU激活函数，不进行任何的归一化<br/>
+FiLM(feature-wise Linear Modulation) conditioning，一种调节机制。</p>
+<p><img loading="lazy" src="../read2/RVQ.png" alt="RVQ"  />
+</p>
+<p>量化器的输出用bps表达。采样率为24000的话，经过编码器的处理后被压缩为1/320——75，相当于每秒75个采样点。那么如果针对于6000bps而言，6000 bps / 75 HZ = 80 bit。那么需要存2^80个矢量的码本，太大太不可行。<br/>
+多个量化器进行残差分摊，分摊针对的是bit，那么每个量化器只需要2^(80/8)=1024个矢量的码本。<br/>
+量化算法来源于VQ-VAE-2，额外用到k-means进行初始化，码本向量每用到随机替换。</p>
+<h4 id="2-训练">(2) 训练<a hidden class="anchor" aria-hidden="true" href="#2-训练">#</a></h4>
+<p><img loading="lazy" src="../read2/%e5%88%a4%e5%88%ab%e5%99%a8.png" alt="判别器"  />
+</p>
+<p>两种判别器</p>
+<h3 id="-encodec">Ⅱ. EnCodec<a hidden class="anchor" aria-hidden="true" href="#-encodec">#</a></h3>
+<h3 id="-audiodec">Ⅲ. AudioDec<a hidden class="anchor" aria-hidden="true" href="#-audiodec">#</a></h3>
+<h3 id="-academiccodec">Ⅳ. AcademicCodec<a hidden class="anchor" aria-hidden="true" href="#-academiccodec">#</a></h3>
+<h3 id="-soundstorm">Ⅴ. SoundStorm<a hidden class="anchor" aria-hidden="true" href="#-soundstorm">#</a></h3>
+<h3 id="-dac">Ⅵ. DAC<a hidden class="anchor" aria-hidden="true" href="#-dac">#</a></h3>
+<h3 id="-speechtokenizer">Ⅶ. SpeechTokenizer<a hidden class="anchor" aria-hidden="true" href="#-speechtokenizer">#</a></h3>
+<h3 id="-funccodec">Ⅷ. FuncCodec<a hidden class="anchor" aria-hidden="true" href="#-funccodec">#</a></h3>
+<h3 id="a-audiolm">A. AudioLM<a hidden class="anchor" aria-hidden="true" href="#a-audiolm">#</a></h3>
+<h3 id="b-audiogen">B. AudioGen<a hidden class="anchor" aria-hidden="true" href="#b-audiogen">#</a></h3>
+<h3 id="c-vall-e">C. VALL-E<a hidden class="anchor" aria-hidden="true" href="#c-vall-e">#</a></h3>
+<h3 id="d-musiclm">D. MusicLM<a hidden class="anchor" aria-hidden="true" href="#d-musiclm">#</a></h3>
+<h3 id="e-vall-e-x">E. VALL-E X<a hidden class="anchor" aria-hidden="true" href="#e-vall-e-x">#</a></h3>
+<h3 id="f-viola">F. VioLA<a hidden class="anchor" aria-hidden="true" href="#f-viola">#</a></h3>
+<h3 id="g-musicgen">G. MusicGen<a hidden class="anchor" aria-hidden="true" href="#g-musicgen">#</a></h3>
+<h3 id="h-audiopalm">H. AudioPaLM<a hidden class="anchor" aria-hidden="true" href="#h-audiopalm">#</a></h3>
+<h3 id="i-speechx">I. SpeechX<a hidden class="anchor" aria-hidden="true" href="#i-speechx">#</a></h3>
+<h3 id="j-lauragpt">J. LauraGPT<a hidden class="anchor" aria-hidden="true" href="#j-lauragpt">#</a></h3>
+<h3 id="k-uniaudios">K. UniAudioS<a hidden class="anchor" aria-hidden="true" href="#k-uniaudios">#</a></h3>
+<h2 id="2-sparks-of-large-audio-models-a-survey-and-outlook">2. Sparks of Large Audio Models: A Survey and Outlook<a hidden class="anchor" aria-hidden="true" href="#2-sparks-of-large-audio-models-a-survey-and-outlook">#</a></h2>
+<p><img loading="lazy" src="../read2/LAM.png" alt="LAM"  />
+</p>
 
 
   </div>
